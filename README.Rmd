@@ -1,0 +1,66 @@
+---
+output: github_document
+---
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "README-"
+)
+```
+
+
+# cleanTS
+
+`cleanTS` package focuses on developing a tool for making the process of cleaning large datasets simple and efficient. Currently it solely focuses on data cleaning for univariate time series data. The package is integrated with already developed and deployed tools for missing value imputation. It also provides a way for visualizing data at different resolutions, allowing micro-scale visualization. The ultimate goal is the creation of a handy software tool that deals with the problems, processes, analysis and visualization of big data time series, with minimum human intervention.
+
+* `cleanTS()` checks the data for missing and duplicate timestamps, performs missing value imputation and removes anomalies/outliers from the data.
+
+* `animate_interval()` splits the data and generates an animated plot.
+
+* `interact_plot()` is similar to `animate_interval()` but creates an interactive plot which provides relatively more control over the animation.
+
+
+
+## Installation
+
+```{r Installation, eval=F}
+# Install release version from CRAN
+install.packages("cleanTS")
+
+# Install development version from GitHub
+devtools::install_github("Mayur1009/cleanTS")
+```
+
+## Example
+
+```{r Example}
+library(cleanTS)
+
+# Read sunspot.month dataset
+data <- timetk::tk_tbl(sunspot.month)
+print(data)
+
+# Randomly insert missing values to simulate missing value imputation
+set.seed(10)
+ind <- sample(nrow(data), 100)
+data$value[ind] <- NA
+
+# Create `cleanTS` object
+cts <- cleanTS(data, date_format = c("my"))
+summary(cts)
+
+# Cleaned Data
+head(cts$clean_data)
+
+# Genearate animated plot
+a <- animate_interval(cts, interval = "10 year")
+gen.animation(a, height = 700, width = 900)
+```
+
+```{r InteractPlot, eval = F}
+# Generate interactive plot
+interact_plot(cts, interval = "10 year")
+```
+
